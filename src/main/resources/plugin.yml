@@ -1,0 +1,4 @@
+name: CrossServerStorge
+version: '${project.version}'
+main: me.zoon20x.crossserverstorage.spigot.CrossServerStorage
+api-version: 1.13

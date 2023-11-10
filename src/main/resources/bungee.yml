@@ -1,0 +1,3 @@
+name: CrossServerStorge
+version: '${project.version}'
+main: me.zoon20x.crossserverstorage.bungee.CrossServerStorage

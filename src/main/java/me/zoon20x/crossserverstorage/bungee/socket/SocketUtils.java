@@ -22,7 +22,7 @@ public class SocketUtils {
 
     public SocketUtils() {
         startConnectionCheck();
-        this.serverSocket = me.zoon20x.crossserverstorage.spigot.CrossServerStorage.getInstance().getServerSocketUtils().getServerSocket();
+        this.serverSocket = CrossServerStorage.getInstance().getServerSocketUtils().getServerSocket();
 
     }
 
@@ -38,7 +38,6 @@ public class SocketUtils {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("connected");
                         if (serverSocket.isClosed()) return;
-
                         //Get input snd output stream
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -46,15 +45,16 @@ public class SocketUtils {
                         DataInputStream a = new DataInputStream(clientSocket.getInputStream());
                         String c = a.readUTF();
                         System.out.println(c);
+
                         try {
                             SendDataOverNetwork data = (SendDataOverNetwork) SerializeData.setData(c);
-                            System.out.println(data.getServer());
+                            CrossServerStorage.getInstance().sendDataToServer(data);
                         } catch (ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }
 
 
-                        //Get input
+
                         out.close();
                         in.close();
                     } catch (IOException e) {
@@ -69,4 +69,7 @@ public class SocketUtils {
     }
 
 
+    public ScheduledTask getTask() {
+        return task;
+    }
 }

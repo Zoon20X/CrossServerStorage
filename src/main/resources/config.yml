@@ -1,0 +1,4 @@
+NetworkPort: 3001
+Proxy:
+  address: "127.0.0.1"
+  port: 3000

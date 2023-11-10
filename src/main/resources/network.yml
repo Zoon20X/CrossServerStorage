@@ -1,0 +1,8 @@
+NetworkPort: 3000
+Servers:
+  Lobby:
+    address: "127.0.0.1"
+    port: 3001
+  Dev:
+    address: "127.0.0.1"
+    port: 3002

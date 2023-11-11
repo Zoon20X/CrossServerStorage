@@ -1,3 +1,4 @@
+file-version: 1
 NetworkPort: 3000
 Servers:
   Lobby:

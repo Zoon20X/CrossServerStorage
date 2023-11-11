@@ -1,9 +1,9 @@
-file-version: 1
+file-version: 2
 NetworkPort: 3000
 Servers:
-  Lobby:
+  lobby:
     address: "127.0.0.1"
     port: 3001
-  Dev:
+  dev:
     address: "127.0.0.1"
     port: 3002

@@ -74,7 +74,7 @@ public class CrossServerStorage {
         loadServers();
         this.serverSocketUtils = new ServerSocketUtils(config.getInt("NetworkPort"));
         this.socketUtils = new SocketUtils();
-        this.proxySend = proxySend;
+        this.proxySend = new ProxySend();
 
     }
     private void loadServers(){

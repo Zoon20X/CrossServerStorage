@@ -13,15 +13,25 @@ public class ProxySend {
 
 
     private Socket socket;
-    private String proxyAddress;
-    private int proxyPort;
 
-    public ProxySend(String proxyAddress, int proxyPort){
-        this.proxyAddress = proxyAddress;
-        this.proxyPort = proxyPort;
+    public ProxySend(){
+
     }
 
 
+
+    public void sendProxyLeaveData(ProxyLeaveData proxyLeaveData) {
+        try {
+            ServersList server = CrossServerStorage.getInstance().getServersLists().get(proxyLeaveData.getServer());
+            socket = new Socket(server.getAddress(), server.getPort());
+            DataOutputStream o = new DataOutputStream(socket.getOutputStream());
+            String send = SerializeData.toString(proxyLeaveData);
+            o.writeUTF(send);
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void sendDataToServer(SendDataOverNetwork sendDataOverNetwork) {
         if (sendDataOverNetwork.getSendType() == SendType.SPECIFIC) {

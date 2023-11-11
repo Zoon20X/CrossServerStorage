@@ -1,6 +1,7 @@
 package me.zoon20x.crossserverstorage.spigot.socket;
 
 
+import me.zoon20x.crossserverstorage.networkUtils.ProxyLeaveData;
 import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
 import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
 import me.zoon20x.crossserverstorage.spigot.CrossServerStorage;
@@ -42,7 +43,13 @@ public class SocketUtils {
                         String c = a.readUTF();
                         //System.out.println(c);
                         try {
-                            SendDataOverNetwork data = (SendDataOverNetwork) SerializeData.setData(c);
+                            Object net = SerializeData.setData(c);
+                            if(net instanceof ProxyLeaveData){
+                                ProxyLeaveData leaveData = (ProxyLeaveData) net;
+                                NetworkEvent.triggerNetworkLeaveEvent(leaveData);
+                                return;
+                            }
+                            SendDataOverNetwork data = (SendDataOverNetwork) net;
                             //System.out.println(data.getSendTo());
                             Object object = SerializeData.setData(data.getObject());
                             NetworkEvent.triggerNetworkReceiveEvent(object);

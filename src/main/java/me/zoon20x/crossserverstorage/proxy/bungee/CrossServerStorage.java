@@ -32,12 +32,15 @@ public final class CrossServerStorage extends Plugin {
         loadServers();
         this.serverSocketUtils = new ServerSocketUtils(config.getInt("NetworkPort"));
         this.socketUtils = new SocketUtils();
-        this.proxySend = proxySend;
+        this.proxySend = new ProxySend();
+        getProxy().getPluginManager().registerListener(this, new BungeeEvents());
     }
+
 
 
     private void createConfig(String fileName){
         try {
+
             config = YamlDocument.create(new File(getDataFolder(), fileName),
                     getClass().getResourceAsStream("/"+fileName),
                     GeneralSettings.DEFAULT,
@@ -53,6 +56,7 @@ public final class CrossServerStorage extends Plugin {
 
     private void loadServers(){
         config.getSection("Servers").getKeys().forEach(serverInfo ->{
+            System.out.println(config.getSection("Servers").getKeys());
             System.out.println(serverInfo);
             serversLists.put(serverInfo.toString(), new ServersList(serverInfo.toString(), config.getString("Servers."+serverInfo+".address"), config.getInt("Servers."+serverInfo+".port")));
         });

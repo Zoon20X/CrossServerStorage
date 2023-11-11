@@ -1,12 +1,16 @@
 package me.zoon20x.crossserverstorage.proxy.velocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.dvs.versioning.BasicVersioning;
 import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
@@ -23,6 +27,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.UUID;
 
 @Plugin(
         id = "crossserverstorage",
@@ -83,6 +88,27 @@ public class CrossServerStorage {
             serversLists.put(serverInfo.toString(), new ServersList(serverInfo.toString(), config.getString("Servers."+serverInfo+".address"), config.getInt("Servers."+serverInfo+".port")));
         });
     }
+
+
+    private HashMap<UUID, String> lastKnownServer = new HashMap<>();
+
+
+    @Subscribe
+    public void onSwitch(ServerConnectedEvent event){
+        Player player = event.getPlayer();
+        RegisteredServer ser = event.getServer();
+        lastKnownServer.put(player.getUniqueId(), ser.getServerInfo().getName());
+    }
+
+    @Subscribe
+    public void onQuit(DisconnectEvent event){
+        Player player = event.getPlayer();
+        if(lastKnownServer.isEmpty() || !lastKnownServer.containsKey(player.getUniqueId())){
+            return;
+        }
+        me.zoon20x.crossserverstorage.proxy.bungee.CrossServerStorage.getInstance().getProxySend().sendProxyLeaveData(new ProxyLeaveData(lastKnownServer.get(player.getUniqueId()), player.getUniqueId()));
+    }
+
 
     @Subscribe
     public void onProxyClose(ProxyShutdownEvent event){

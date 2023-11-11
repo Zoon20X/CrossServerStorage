@@ -1,4 +1,4 @@
-package me.zoon20x.crossserverstorage.spigot.socket;
+package me.zoon20x.crossserverstorage.spigot.socket.network;
 
 import org.bukkit.Bukkit;
 

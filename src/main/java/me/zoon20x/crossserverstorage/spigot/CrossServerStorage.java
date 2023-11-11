@@ -7,25 +7,24 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
+import me.zoon20x.crossserverstorage.api.CrossServerAPI;
 import me.zoon20x.crossserverstorage.networkUtils.BasicObject;
-import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
-import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
 import me.zoon20x.crossserverstorage.networkUtils.ServerSocketUtils;
 import me.zoon20x.crossserverstorage.spigot.events.NetEvents;
-import me.zoon20x.crossserverstorage.spigot.socket.SendTo;
+import me.zoon20x.crossserverstorage.networkUtils.SendType;
+import me.zoon20x.crossserverstorage.spigot.socket.SocketSend;
 import me.zoon20x.crossserverstorage.spigot.socket.SocketUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 
 
 public final class CrossServerStorage extends JavaPlugin {
     private static CrossServerStorage instance;
     private SocketUtils socketUtils;
+    private SocketSend socketSend;
     private ServerSocketUtils serverSocketUtils;
     private YamlDocument config;
 
@@ -41,9 +40,11 @@ public final class CrossServerStorage extends JavaPlugin {
 
 
         this.serverSocketUtils = new ServerSocketUtils(networkPort);
-        this.socketUtils = new SocketUtils(proxyAddress, proxyPort);
+        this.socketUtils = new SocketUtils();
+        this.socketSend = new SocketSend(proxyAddress, proxyPort);
+
         if(networkPort == 3001){
-            socketUtils.sendDataToNetwork(SendTo.ALL, new BasicObject("Lobby"));
+            socketSend.sendDataToNetwork(SendType.ALL, new BasicObject("Lobby"));
         }
 
         Bukkit.getPluginManager().registerEvents(new NetEvents(), this);
@@ -80,6 +81,9 @@ public final class CrossServerStorage extends JavaPlugin {
     }
     public SocketUtils getSocketUtils() {
         return socketUtils;
+    }
+    public SocketSend getSocketSend() {
+        return socketSend;
     }
 
     public ServerSocketUtils getServerSocketUtils() {

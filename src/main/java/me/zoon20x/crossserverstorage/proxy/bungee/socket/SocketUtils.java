@@ -1,7 +1,7 @@
-package me.zoon20x.crossserverstorage.bungee.socket;
+package me.zoon20x.crossserverstorage.proxy.bungee.socket;
 
 
-import me.zoon20x.crossserverstorage.bungee.CrossServerStorage;
+import me.zoon20x.crossserverstorage.proxy.bungee.CrossServerStorage;
 import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
 import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
 import net.md_5.bungee.api.ProxyServer;
@@ -11,7 +11,6 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 public class SocketUtils {
@@ -36,19 +35,17 @@ public class SocketUtils {
                 if(!serverSocket.isClosed()) {
                     try {
                         Socket clientSocket = serverSocket.accept();
-                        System.out.println("connected");
                         if (serverSocket.isClosed()) return;
                         //Get input snd output stream
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        System.out.println("PROCESS");
                         DataInputStream a = new DataInputStream(clientSocket.getInputStream());
                         String c = a.readUTF();
                         System.out.println(c);
 
                         try {
                             SendDataOverNetwork data = (SendDataOverNetwork) SerializeData.setData(c);
-                            CrossServerStorage.getInstance().sendDataToServer(data);
+                            CrossServerStorage.getInstance().getProxySend().sendDataToServer(data);
                         } catch (ClassNotFoundException e) {
                             throw new RuntimeException(e);
                         }

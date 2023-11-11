@@ -1,11 +1,10 @@
 package me.zoon20x.crossserverstorage.spigot.socket;
 
 
-import me.zoon20x.crossserverstorage.networkUtils.BasicObject;
 import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
 import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
 import me.zoon20x.crossserverstorage.spigot.CrossServerStorage;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import me.zoon20x.crossserverstorage.spigot.socket.network.NetworkEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -15,13 +14,10 @@ import java.net.Socket;
 
 public class SocketUtils {
     private ServerSocket serverSocket;
-    private Socket socket;
-    private String proxyAddress;
-    private int proxyPort;
+
     private BukkitTask task;
-    public SocketUtils(String proxyAddress, int proxyPort) {
-        this.proxyAddress = proxyAddress;
-        this.proxyPort = proxyPort;
+    public SocketUtils() {
+
         startConnectionCheck();
         this.serverSocket = CrossServerStorage.getInstance().getServerSocketUtils().getServerSocket();
     }
@@ -67,36 +63,6 @@ public class SocketUtils {
                 }
             }
         }.runTaskTimerAsynchronously(CrossServerStorage.getInstance(), 0, 5);
-    }
-
-
-    public void sendDataToNetwork(SendTo sendTo, Object data){
-        try {
-            socket = new Socket(proxyAddress, proxyPort);
-            DataOutputStream o = new DataOutputStream(socket.getOutputStream());
-            String b = SerializeData.toString((Serializable) data);
-            SendDataOverNetwork over = new SendDataOverNetwork(sendTo.toString(), b);
-            String send = SerializeData.toString(over);
-            o.writeUTF(send);
-            socket.close();
-            
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void sendDataToNetwork(SendTo sendTo, Object data, String server){
-        try {
-            socket = new Socket(proxyAddress, proxyPort);
-            DataOutputStream o = new DataOutputStream(socket.getOutputStream());
-            String b = SerializeData.toString((Serializable) data);
-            SendDataOverNetwork over = new SendDataOverNetwork(sendTo.toString(), b, server);
-            String send = SerializeData.toString(over);
-            o.writeUTF(send);
-            socket.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
     public BukkitTask getTask() {
         return task;

@@ -1,12 +1,10 @@
-package me.zoon20x.crossserverstorage.velocity.socket;
+package me.zoon20x.crossserverstorage.proxy.velocity.socket;
 
 
-import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
-import com.velocitypowered.api.scheduler.Scheduler;
 import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
 import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
-import me.zoon20x.crossserverstorage.velocity.CrossServerStorage;
+import me.zoon20x.crossserverstorage.proxy.velocity.CrossServerStorage;
 
 
 import java.io.*;
@@ -46,7 +44,7 @@ public class SocketUtils {
 
                     try {
                         SendDataOverNetwork data = (SendDataOverNetwork) SerializeData.setData(c);
-                        CrossServerStorage.getInstance().sendDataToServer(data);
+                        CrossServerStorage.getInstance().getProxySend().sendDataToServer(data);
                     } catch (ClassNotFoundException e) {
                         throw new RuntimeException(e);
                     }

@@ -1,4 +1,4 @@
-package me.zoon20x.crossserverstorage.velocity.socket;
+package me.zoon20x.crossserverstorage.proxy.velocity.socket;
 
 public class ServersList {
 

@@ -1,4 +1,4 @@
-package me.zoon20x.crossserverstorage.velocity;
+package me.zoon20x.crossserverstorage.proxy.velocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -13,11 +13,10 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
-import me.zoon20x.crossserverstorage.networkUtils.SendDataOverNetwork;
-import me.zoon20x.crossserverstorage.networkUtils.SerializeData;
-import me.zoon20x.crossserverstorage.networkUtils.ServerSocketUtils;
-import me.zoon20x.crossserverstorage.velocity.socket.ServersList;
-import me.zoon20x.crossserverstorage.velocity.socket.SocketUtils;
+import me.zoon20x.crossserverstorage.api.CrossServerAPI;
+import me.zoon20x.crossserverstorage.networkUtils.*;
+import me.zoon20x.crossserverstorage.proxy.velocity.socket.ServersList;
+import me.zoon20x.crossserverstorage.proxy.velocity.socket.SocketUtils;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -35,11 +34,13 @@ public class CrossServerStorage {
     private final ProxyServer server;
     private SocketUtils socketUtils;
     private ServerSocketUtils serverSocketUtils;
-    private Socket socket;
+    private Path dataDirectory;
     private static CrossServerStorage instance;
     private HashMap<String, ServersList> serversLists = new HashMap<>();
 
     private YamlDocument config;
+
+    private ProxySend proxySend;
 
     @Inject
     private Logger logger;
@@ -49,10 +50,13 @@ public class CrossServerStorage {
     public CrossServerStorage(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
-
+        this.dataDirectory = dataDirectory;
+        createConfig("network.yml");
+    }
+    private void createConfig(String fileName){
         try {
-            config = YamlDocument.create(new File(dataDirectory.toFile(), "network.yml"),
-                    getClass().getResourceAsStream("/" + "network.yml"),
+            config = YamlDocument.create(new File(dataDirectory.toFile(), fileName),
+                    getClass().getResourceAsStream("/"+fileName),
                     GeneralSettings.DEFAULT,
                     LoaderSettings.builder().setAutoUpdate(true).build(),
                     DumperSettings.DEFAULT,
@@ -62,7 +66,6 @@ public class CrossServerStorage {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Subscribe
@@ -71,6 +74,7 @@ public class CrossServerStorage {
         loadServers();
         this.serverSocketUtils = new ServerSocketUtils(config.getInt("NetworkPort"));
         this.socketUtils = new SocketUtils();
+        this.proxySend = proxySend;
 
     }
     private void loadServers(){
@@ -85,39 +89,6 @@ public class CrossServerStorage {
         serverSocketUtils.close();
         socketUtils.getTask().cancel();
     }
-
-
-    public void sendDataToServer(SendDataOverNetwork sendDataOverNetwork) {
-        if (sendDataOverNetwork.getSendTo().equalsIgnoreCase("SERVER")) {
-            try {
-                ServersList server = getInstance().getServersLists().get(sendDataOverNetwork.getServerName());
-                socket = new Socket(server.getAddress(), server.getPort());
-                DataOutputStream o = new DataOutputStream(socket.getOutputStream());
-                String send = SerializeData.toString(sendDataOverNetwork);
-                o.writeUTF(send);
-                socket.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return;
-        }
-        if (sendDataOverNetwork.getSendTo().equalsIgnoreCase("ALL")) {
-            getServersLists().values().forEach(servers -> {
-                try {
-                    socket = new Socket(servers.getAddress(), servers.getPort());
-                    DataOutputStream o = new DataOutputStream(socket.getOutputStream());
-                    String send = SerializeData.toString(sendDataOverNetwork);
-                    o.writeUTF(send);
-                    socket.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            });
-        }
-
-    }
-
     public static CrossServerStorage getInstance() {
         return instance;
     }
@@ -138,5 +109,8 @@ public class CrossServerStorage {
     }
     public YamlDocument getConfig(){
         return config;
+    }
+    public ProxySend getProxySend(){
+        return proxySend;
     }
 }

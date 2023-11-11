@@ -1,4 +1,4 @@
-package me.zoon20x.crossserverstorage.bungee.socket;
+package me.zoon20x.crossserverstorage.proxy.bungee.socket;
 
 public class ServersList {
 

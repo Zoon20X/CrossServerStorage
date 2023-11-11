@@ -9,23 +9,23 @@ import java.io.Serializable;
 public class SendDataOverNetwork implements Serializable {
     private final static long serialVersionUID = 1;
 
-    private String sendTo;
+    private SendType sendType;
     private String object;
     private String serverName;
 
 
-    public SendDataOverNetwork(String sendTo, String object){
-        this.sendTo = sendTo;
+    public SendDataOverNetwork(SendType sendType, String object){
+        this.sendType = sendType;
         this.object = object;
     }
-    public SendDataOverNetwork(String sendTo, String object, String serverName){
-        this.sendTo = sendTo;
+    public SendDataOverNetwork(SendType sendType, String object, String serverName){
+        this.sendType = sendType;
         this.object = object;
         this.serverName = serverName;
     }
 
-    public String getSendTo() {
-        return sendTo;
+    public SendType getSendType() {
+        return sendType;
     }
 
     public String getObject() {

@@ -52,7 +52,7 @@ public class CrossServerStorage {
 
         try {
             config = YamlDocument.create(new File(dataDirectory.toFile(), "network.yml"),
-                    getClass().getResourceAsStream("/network.yml"),
+                    getClass().getResourceAsStream("/" + "network.yml"),
                     GeneralSettings.DEFAULT,
                     LoaderSettings.builder().setAutoUpdate(true).build(),
                     DumperSettings.DEFAULT,

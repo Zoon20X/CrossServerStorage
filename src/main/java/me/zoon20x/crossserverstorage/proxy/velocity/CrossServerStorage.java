@@ -106,7 +106,7 @@ public class CrossServerStorage {
         if(lastKnownServer.isEmpty() || !lastKnownServer.containsKey(player.getUniqueId())){
             return;
         }
-        me.zoon20x.crossserverstorage.proxy.bungee.CrossServerStorage.getInstance().getProxySend().sendProxyLeaveData(new ProxyLeaveData(lastKnownServer.get(player.getUniqueId()), player.getUniqueId()));
+        CrossServerStorage.getInstance().getProxySend().sendProxyLeaveData(new ProxyLeaveData(lastKnownServer.get(player.getUniqueId()), player.getUniqueId()));
     }
 
 

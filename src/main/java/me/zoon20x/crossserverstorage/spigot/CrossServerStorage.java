@@ -7,11 +7,8 @@ import dev.dejvokep.boostedyaml.settings.dumper.DumperSettings;
 import dev.dejvokep.boostedyaml.settings.general.GeneralSettings;
 import dev.dejvokep.boostedyaml.settings.loader.LoaderSettings;
 import dev.dejvokep.boostedyaml.settings.updater.UpdaterSettings;
-import me.zoon20x.crossserverstorage.api.CrossServerAPI;
-import me.zoon20x.crossserverstorage.networkUtils.BasicObject;
 import me.zoon20x.crossserverstorage.networkUtils.ServerSocketUtils;
 import me.zoon20x.crossserverstorage.spigot.events.NetEvents;
-import me.zoon20x.crossserverstorage.networkUtils.SendType;
 import me.zoon20x.crossserverstorage.spigot.socket.SocketSend;
 import me.zoon20x.crossserverstorage.spigot.socket.SocketUtils;
 import org.bukkit.Bukkit;
@@ -42,10 +39,6 @@ public final class CrossServerStorage extends JavaPlugin {
         this.serverSocketUtils = new ServerSocketUtils(networkPort);
         this.socketUtils = new SocketUtils();
         this.socketSend = new SocketSend(proxyAddress, proxyPort);
-
-        if(networkPort == 3001){
-            socketSend.sendDataToNetwork(SendType.ALL, new BasicObject("Lobby"));
-        }
 
         Bukkit.getPluginManager().registerEvents(new NetEvents(), this);
 

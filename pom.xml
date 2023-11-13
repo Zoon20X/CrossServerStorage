@@ -22,6 +22,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.0</version>
+
                 <configuration>
                     <filters>
                         <filter>
@@ -37,6 +38,7 @@
                             <shadedPattern>me.zoon20x.crossserverstorage.libs</shadedPattern>
                         </relocation>
                     </relocations>
+
                 </configuration>
                 <executions>
                     <execution>
@@ -89,6 +91,7 @@
     </repositories>
 
     <dependencies>
+
         <dependency>
             <groupId>dev.dejvokep</groupId>
             <artifactId>boosted-yaml</artifactId>

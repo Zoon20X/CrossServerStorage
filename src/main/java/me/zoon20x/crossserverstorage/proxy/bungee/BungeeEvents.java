@@ -18,7 +18,12 @@ public class BungeeEvents implements Listener {
 
 
     @EventHandler
-    public void onSwitch(ServerDisconnectEvent event){
+    public void onSwitch(ServerSwitchEvent event){
+
+    }
+
+    @EventHandler
+    public void onLeave(ServerDisconnectEvent event){
         ProxiedPlayer player =event.getPlayer();
         ServerInfo info = event.getTarget();
         lastKnownServer.put(player.getUniqueId(), info.getName());

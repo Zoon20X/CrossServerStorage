@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.UUID;
 
 public class SocketSend implements NetworkAPI {
 
@@ -39,6 +40,23 @@ public class SocketSend implements NetworkAPI {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void sendDataToNetwork(SendType sendType, Object data, UUID uuid) {
+        try {
+            socket = new Socket(proxyAddress, proxyPort);
+            DataOutputStream o = new DataOutputStream(socket.getOutputStream());
+            String b = SerializeData.toString((Serializable) data);
+            SendDataOverNetwork over = new SendDataOverNetwork(sendType, b, uuid.toString());
+            String send = SerializeData.toString(over);
+            o.writeUTF(send);
+            socket.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void sendDataToNetwork(SendType sendType, Object data, String server){
         try {

@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import java.net.Socket;
+import java.util.UUID;
 
 public class ProxySend {
 
@@ -36,7 +37,7 @@ public class ProxySend {
     public void sendDataToServer(SendDataOverNetwork sendDataOverNetwork) {
         if (sendDataOverNetwork.getSendType() == SendType.SPECIFIC) {
             try {
-                ServersList server = CrossServerStorage.getInstance().getServersLists().get(sendDataOverNetwork.getServerName());
+                ServersList server = CrossServerStorage.getInstance().getServersLists().get(sendDataOverNetwork.getExtraData());
                 socket = new Socket(server.getAddress(), server.getPort());
                 DataOutputStream o = new DataOutputStream(socket.getOutputStream());
                 String send = SerializeData.toString(sendDataOverNetwork);
@@ -60,6 +61,25 @@ public class ProxySend {
                 }
 
             });
+        }
+        if (sendDataOverNetwork.getSendType() == SendType.CONNECTED) {
+            try {
+                UUID uuid = UUID.fromString(sendDataOverNetwork.getExtraData());
+                if(CrossServerStorage.getInstance().getProxy().getPlayer(uuid) == null){
+                    return;
+                }
+                String serverName = CrossServerStorage.getInstance().getProxy().getPlayer(uuid).getServer().getInfo().getName();
+                System.out.println(serverName);
+                ServersList server = CrossServerStorage.getInstance().getServersLists().get(serverName);
+                socket = new Socket(server.getAddress(), server.getPort());
+                DataOutputStream o = new DataOutputStream(socket.getOutputStream());
+                String send = SerializeData.toString(sendDataOverNetwork);
+                o.writeUTF(send);
+                socket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
         }
 
     }

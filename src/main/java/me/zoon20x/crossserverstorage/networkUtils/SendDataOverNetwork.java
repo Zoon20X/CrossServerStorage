@@ -11,17 +11,17 @@ public class SendDataOverNetwork implements Serializable {
 
     private SendType sendType;
     private String object;
-    private String serverName;
+    private String extraData;
 
 
     public SendDataOverNetwork(SendType sendType, String object){
         this.sendType = sendType;
         this.object = object;
     }
-    public SendDataOverNetwork(SendType sendType, String object, String serverName){
+    public SendDataOverNetwork(SendType sendType, String object, String extraData){
         this.sendType = sendType;
         this.object = object;
-        this.serverName = serverName;
+        this.extraData = extraData;
     }
 
     public SendType getSendType() {
@@ -33,7 +33,7 @@ public class SendDataOverNetwork implements Serializable {
     }
 
     @Nullable
-    public String getServerName() {
-        return serverName;
+    public String getExtraData() {
+        return extraData;
     }
 }

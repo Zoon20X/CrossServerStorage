@@ -21,4 +21,3 @@ however, the repo is live and if you wanted to give it a try you can acess the a
             <scope>provided</scope>
         </dependency>
 ```
-there will be a detailed documentation eventually, as well as a video going over the benefits and limits of this API
